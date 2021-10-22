@@ -1,5 +1,4 @@
-from json import JSONDecodeError
-
+# coding=utf-8
 import requests
 import json
 import time
@@ -49,10 +48,9 @@ def clock_in(config):
     final_url = handle_clock_in_url + "?" + parse.urlencode(param)
     print("post data: " + final_url)
     response = session.post(final_url, json=make_request())
-    print(response.text)
     try:
         re = json.loads(response.text)
-    except JSONDecodeError:
+    except ValueError:
         return False
     if re["code"] == 14801 or re["code"] == 1000:
         return True
