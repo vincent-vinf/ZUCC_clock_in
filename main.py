@@ -88,4 +88,7 @@ def make_request():
 if __name__ == '__main__':
     with open("./config.json", 'r') as configs:
         configs = json.load(configs)
-        clock_in(configs)
+        if clock_in(configs):
+            print(time.strftime("%Y-%m-%d", time.localtime(time.time())), " 打卡成功", )
+        else:
+            print(time.strftime("%Y-%m-%d", time.localtime(time.time())), " 打卡失败!")
