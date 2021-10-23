@@ -7,8 +7,9 @@ Zucc自动打卡
    ```bash
    crontab -e
    # 写入
-   0 9 * * * python /path/to/main.py >> /path/to/log
+   0 9 * * * /usr/bin/python3 /path/to/main.py >> /path/to/log
    # 每天9点执行一次脚本
+   # 注意目录和文件的权限足够
    ```
 
    
