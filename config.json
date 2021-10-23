@@ -1,4 +1,18 @@
 {
-  "username": "xxxxxxxx",
-  "password": "xxxxxx"
+  "user": [
+    {
+      "username": "xxxxxxxx",
+      "password": "xxxxxx"
+    },
+    {
+      "username": "xxxxxxxx",
+      "password": "xxxxxx"
+    }
+  ],
+  "email": {
+    "host": "smtp.qq.com",
+    "username": "xxxxx@qq.com",
+    "password": "xxxxxxx",
+    "receiver": "xxxxx@qq.com"
+  }
 }

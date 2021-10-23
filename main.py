@@ -5,6 +5,10 @@ import time
 import random
 from urllib import parse
 
+from email.mime.text import MIMEText
+from email.header import Header
+from smtplib import SMTP_SSL
+
 auth_url = "http://ca.zucc.edu.cn/cas/login"
 clock_in_url = "http://ca.zucc.edu.cn/cas/login?service=http://yqdj.zucc.edu.cn/feiyan_api/h5/html/daka/daka.html"
 handle_clock_in_url = "http://yqdj.zucc.edu.cn/feiyan_api/examen/examenAnswerController/commitAnswer.do"
@@ -50,6 +54,7 @@ def clock_in(config):
     response = session.post(final_url, json=make_request())
     try:
         re = json.loads(response.text)
+        print(re)
     except ValueError:
         return False
     if re["code"] == 14801 or re["code"] == 1000:
@@ -83,10 +88,33 @@ def make_request():
                                                   'China in 7 days?":"否 No"} '}
 
 
+def send_mail(config, mail_title='', mail_content=''):
+    if config is None:
+        return
+        # ssl login
+    smtp = SMTP_SSL(config["host"])
+    # set_debuglevel() for debug, 1 enable debug, 0 for disable
+    # smtp.set_debuglevel(1)
+    smtp.ehlo(config["host"])
+    smtp.login(config["username"], config["password"])
+
+    # construct message
+    msg = MIMEText(mail_content, "plain", 'utf-8')
+    msg["Subject"] = Header(mail_title, 'utf-8')
+    msg["From"] = config["username"]
+    msg["To"] = config["receiver"]
+    smtp.sendmail(config["username"], config["receiver"], msg.as_string())
+    smtp.quit()
+
+
 if __name__ == '__main__':
     with open("./config.json", 'r') as configs:
         configs = json.load(configs)
-        if clock_in(configs):
-            print(time.strftime("%Y-%m-%d", time.localtime(time.time())), " 打卡成功", )
-        else:
-            print(time.strftime("%Y-%m-%d", time.localtime(time.time())), " 打卡失败!")
+        log = time.strftime("%Y-%m-%d", time.localtime(time.time())) + ":\n"
+        for config in configs["user"]:
+            if clock_in(config):
+                log += config["username"] + ": 打卡成功\n"
+            else:
+                log += config["username"] + ": 打卡失败！\n"
+        print(log)
+        send_mail(configs["email"], "ZUCC打卡日志", log)

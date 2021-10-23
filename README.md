@@ -7,11 +7,8 @@ Zucc自动打卡
    ```bash
    crontab -e
    # 写入
-   0 9 * * * python /path/to/main.py > /path/to/log
+   0 9 * * * python /path/to/main.py >> /path/to/log
    # 每天9点执行一次脚本
-   
-   # exmaple
-   0 9 * * * python3 /root/repo/ZUCC_clock_in/main.py > /root/repo/ZUCC_clock_in/log
    ```
 
    
