@@ -70,7 +70,7 @@ def clock_in(config):
         update_time_local = json.loads(f.read())["updateTime"]
         # 判断 schema 更新时间是否相同
         if update_time_local != re["data"]["examen"]["updateTime"]:
-            save_schema(re)
+            # save_schema(re)
             raise ClockInError("问卷内容更新")
     else:
         save_schema(re)
