@@ -67,9 +67,9 @@ def clock_in(config):
     if os.path.exists(schema_local_path):
         f = open("examen_schema.json", 'r')
         # scheme_local = json.loads(f.read())["scheme"]
-        update_time_local = json.loads(f.read())["updateTime"]
+        update_time_local = json.loads(f.read())["scheme"]
         # 判断 schema 更新时间是否相同
-        if update_time_local != re["data"]["examen"]["updateTime"]:
+        if update_time_local != re["data"]["examen"]["scheme"]:
             # save_schema(re)
             raise ClockInError("问卷内容更新")
     else:
