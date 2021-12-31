@@ -155,7 +155,7 @@ def send_mail(config, mail_title='', mail_content=''):
 
 
 if __name__ == '__main__':
-    with open("./config.json", 'r') as configs:
+    with open("./config.json", 'r', encoding='utf-8') as configs:
         configs = json.load(configs)
         log = time.strftime("%Y-%m-%d", time.localtime(time.time())) + ":\n"
         for config in configs["user"]:
