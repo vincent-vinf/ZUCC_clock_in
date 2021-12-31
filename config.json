@@ -2,11 +2,15 @@
   "user": [
     {
       "username": "xxxxxxxx",
-      "password": "xxxxxx"
+      "password": "xxxxxx",
+      "vaccine": "1",
+      "tag": "张三"
     },
     {
       "username": "xxxxxxxx",
-      "password": "xxxxxx"
+      "password": "xxxxxx",
+      "vaccine": "2",
+      "tag": "李四"
     }
   ],
   "email": {

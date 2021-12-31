@@ -76,7 +76,7 @@ def clock_in(config):
         save_schema(re)
     final_url = handle_clock_in_url + "?" + parse.urlencode(param)
     print("post data: " + final_url)
-    response = session.post(final_url, json=make_request())
+    response = session.post(final_url, json=make_request(config["vaccine"]))
     try:
         re = json.loads(response.text)
         print(re)
@@ -97,30 +97,42 @@ def save_schema(re):
     f.close()
 
 
-def make_request():
+def make_request(vaccine):
+    # vaccine为编号
+
+    vaccine_list = {"1": "已接种两针剂疫苗（科兴、生物等）第一针", "2": "已接种两针剂疫苗（科兴、生物等）第二针", "3": "已接种两针剂疫苗（科兴、生物等）加强针",
+                    "4": "已接种三针剂疫苗（安徽智飞）第一针", "5": "已接种三针剂疫苗（安徽智飞）第二针", "6": "已接种三针剂疫苗（安徽智飞）第三针", "7": "未接种疫苗"}
+
     today = time.strftime("%Y-%m-%d", time.localtime(time.time()))
     return {'examenSchemeId': examen_schema_id, 'examenTitle': '师生报平安',
             'answer': '{"填报日期(Date)":"' + today + '","自动定位(Automatic location)":"浙江省 杭州市 拱墅区","目前所在地":"校内 校内 校内",'
-                                                  '"近14天是否有与疫情中、高风险地区人员的接触史？(Did you contact any person(s) from medium or high risk area of '
-                                                  'the epidemic in the past 14 days?)":"否(NO)","近14天是否有与疑似、确诊人员的接触史?(In the past 14 days, '
-                                                  'did you contact any COVID-19 suspected or confirmed person(s)?)":"否(NO)",'
-                                                  '"近21天是否有中高风险地区旅居史，近14天是否有中高风险地区所在区旅居史？( In the past 21 days, have you been to medium or '
-                                                  'high-risk area? In the past 14 days, have you been to any places close to medium or high '
-                                                  'risk area?)":"否(NO)","现是否处于医学观察状态？(Are you under medical observation currently ?)":"否(NO)",'
-                                                  '"若处于医学观察状态，请填写隔离地点和隔离起始时间？(If yes, please indicate the place and the starting date.)":"",'
-                                                  '"现是否处于居家隔离状态？(Are you in home quarantine now?)":"否(NO)","若处于居家隔离状态，请填写隔离地点和隔离起始时间？(If yes, '
-                                                  'please indicate the place and the starting date.)":"","现身体状况，是否存在发热体温、寒战、咳嗽、胸闷以及呼吸困难等症状？( '
-                                                  'Do you have any symptoms such as fever, chills, cough, chest tightness, and difficulty '
-                                                  'breathing?)":"否(NO)","同住家属近14天是否有与疫情中、高风险地区人员的接触史？(Did your family member (s) living '
-                                                  'together contact any person(s) from medium or high risk area in the past 14 days?)":"否('
-                                                  'NO)","同住家属近14天是否有与疑似、确诊人员的接触史？(Did your family members living together contact any COVID-19 '
-                                                  'suspected or confirmed person(s) in the past 14 days?)":"否(NO)","同住家属近14天是否到过疫情中、高风险地区？('
-                                                  'Have any family members living together been to medium or high risk area in the past 14 '
-                                                  'days?)":"否(NO)","同住家属现是否处于医学观察状态?(Are the family members living together under medical '
-                                                  'observation?)":"否(NO)","今日申领学校所在地健康码的颜色? What\'s the color of today\'s health code?":"绿码('
-                                                  'Green code)","本人或家庭成员(包括其他亲密接触人员)是否有近28日入境或未来7日拟入境的情况?Have you or your family members('
-                                                  'including other close contact persons) entered China over the past 28 days or plan to enter '
-                                                  'China in 7 days?":"否 No"} '}
+                                                  '"近14天是否有与疫情中、高风险地区人员的接触史？(Did you contact any person(s) from medium '
+                                                  'or high risk area of the epidemic in the past 14 days?)":"否(NO)",'
+                                                  '"近14天是否有与疑似、确诊人员的接触史?(In the past 14 days, did you contact any '
+                                                  'COVID-19 suspected or confirmed person(s)?)":"否(NO)",'
+                                                  '"近21天是否有中高风险地区旅居史，近14天是否有中高风险地区所在区旅居史？( In the past 21 days, '
+                                                  'have you been to medium or high-risk area? In the past 14 days, '
+                                                  'have you been to any places close to medium or high risk area?)":"否('
+                                                  'NO)","现是否处于医学观察状态？(Are you under medical observation currently '
+                                                  '?)":"否(NO)","若处于医学观察状态，请填写隔离地点和隔离起始时间？(If yes, please indicate the '
+                                                  'place and the starting date.)":"","现是否处于居家隔离状态？(Are you in home '
+                                                  'quarantine now?)":"否(NO)","若处于居家隔离状态，请填写隔离地点和隔离起始时间？(If yes, '
+                                                  'please indicate the place and the starting date.)":"",'
+                                                  '"现身体状况，是否存在发热体温、寒战、咳嗽、胸闷以及呼吸困难等症状？( Do you have any symptoms such as '
+                                                  'fever, chills, cough, chest tightness, and difficulty '
+                                                  'breathing?)":"否(NO)","同住家属近14天是否有与疫情中、高风险地区人员或疑似、确诊人员的接触史？(Did your '
+                                                  'family member (s) living together contact any person(s) from medium '
+                                                  'or high risk area in the past 14 days?)":"否(NO)",'
+                                                  '"同住家属近14天是否到过疫情中、高风险地区？(Have any family members living together been '
+                                                  'to medium or high risk area in the past 14 days?)":"否(NO)",'
+                                                  '"同住家属现是否处于医学观察状态?(Are the family members living together under '
+                                                  'medical observation?)":"否(NO)","疫苗接种情况?(Vaccination '
+                                                  'status?)":"'
+                      + vaccine_list[vaccine] + '","今日申领学校所在地健康码的颜色? What\'s the color '
+                                                'of today\'s health code?":"绿码(Green code)",'
+                                                '"本人或家庭成员(包括其他亲密接触人员)是否有近28日入境或未来7日拟入境的情况?Have you or your family '
+                                                'members(including other close contact persons) entered China over the '
+                                                'past 28 days or plan to enter China in 7 days?":"否 No"}'}
 
 
 def send_mail(config, mail_title='', mail_content=''):
@@ -147,12 +159,18 @@ if __name__ == '__main__':
         configs = json.load(configs)
         log = time.strftime("%Y-%m-%d", time.localtime(time.time())) + ":\n"
         for config in configs["user"]:
+            u = config["username"]
+            if "tag" in config.keys():
+                u += "(" + config["tag"] + ")"
             try:
                 if clock_in(config):
-                    log += config["username"] + ": 打卡成功！\n"
+                    log += u + ": 打卡成功！\n"
                 else:
-                    log += config["username"] + ": 打卡失败！\n"
+                    log += u + ": 打卡失败！\n"
             except ClockInError as e:
-                log += config["username"] + ": 打卡失败，" + e.msg + "！\n"
+                log += u + ": 打卡失败，" + e.msg + "！\n"
+            except BaseException as e:
+                log += u + ": 打卡失败，未处理的异常!!!\n"
+
         print(log)
         send_mail(configs["email"], "ZUCC打卡日志", log)
