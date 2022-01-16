@@ -1,5 +1,7 @@
 .idea/
 
+__pycache__/
+
 examen_schema.json
 
 my.json
