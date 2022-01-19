@@ -26,12 +26,21 @@ post_data = {
 # examen schema id
 examen_schema_id = 2
 examen_schema_validation = False
+today = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 
-
-# 自定义打卡失败异常类
+'''
+自定义打卡失败异常类
+1 打卡模版不一致错误
+2 账号密码不正确错误
+'''
 class ClockInError(Exception):
-    def __init__(self, msg):
-        self.msg = msg
+    def __init__(self, code):
+        self.code = code
+        errs = {
+            1: "问卷内容更新！请及时更新！",
+            2: "账号或密码不正确！"
+        }
+        self.msg = errs.get(code)
 
 
 def clock_in(config):
@@ -46,6 +55,9 @@ def clock_in(config):
     response = session.post(url=auth_url, data=post_data)
     if not response.ok:
         return False
+    # 登陆失败
+    if session.cookies.get("CASTGC") is None:
+        raise ClockInError(2)
     print("##Post login page succeed!")
 
     response = session.get(url=clock_in_url, headers=InitHeader)
@@ -72,7 +84,7 @@ def clock_in(config):
             # 判断 schema 更新时间是否相同
             if scheme_local != re["data"]["examen"]["scheme"]:
                 # save_schema(re)
-                raise ClockInError("问卷内容更新！请及时更新！")
+                raise ClockInError(1)
         else:
             save_schema(re)
         examen_schema_validation = True
@@ -108,7 +120,6 @@ def make_request(vaccine, address):
     vaccine_list = {"1": "已接种两针剂疫苗（科兴、生物等）第一针", "2": "已接种两针剂疫苗（科兴、生物等）第二针", "3": "已接种两针剂疫苗（科兴、生物等）加强针",
                     "4": "已接种三针剂疫苗（安徽智飞）第一针", "5": "已接种三针剂疫苗（安徽智飞）第二针", "6": "已接种三针剂疫苗（安徽智飞）第三针", "7": "未接种疫苗"}
 
-    today = time.strftime("%Y-%m-%d", time.localtime(time.time()))
     return {'examenSchemeId': examen_schema_id, 'examenTitle': '师生报平安',
             'answer': '{"填报日期(Date)":"' + today + '","自动定位(Automatic location)":"' +
                       (address if address else '浙江省 杭州市 拱墅区') + '","目前所在地":"' +
@@ -150,11 +161,10 @@ if __name__ == '__main__':
         try:
             sender = EmailSender(email_config["host"], email_config["username"], email_config["password"])
         except BaseException as e:
-            log = "获取邮箱发送实例失败，" + e.__str__() + "！\n"
-            print(log)
+            print("获取邮箱发送实例失败，" + e.__str__() + "！\n")
             exit(0)
 
-        log = time.strftime("%Y-%m-%d", time.localtime(time.time())) + ":\n"
+        log = ""
         for config in configs["user"]:
             u = config["username"]
             if "tag" in config.keys():
@@ -165,15 +175,19 @@ if __name__ == '__main__':
                 else:
                     u += ": 打卡失败！\n"
             except ClockInError as e:
-                log = e.msg
-                break
+                print(e.msg)
+                if e.code != 1:
+                    u += "：打卡失败！" + e.msg + "\n"
+                else:
+                    log = e.msg
+                    break
             except BaseException as e:
                 u += ": 打卡失败，未处理的异常！\n"
             # 发送打卡信息给打卡人
             if "email" in config.keys() and config["email"] != "":
-                sender.send(config["email"], "ZUCC 打卡日志", u)
+                sender.send(config["email"], "ZUCC 打卡日志", today + ":\n" + u)
             log += u
 
         print(log)
-        sender.send(email_config["receiver"], "ZUCC 打卡日志（总）", log)
+        sender.send(email_config["receiver"], "ZUCC 打卡日志（总）", today + ":\n" + log)
         sender.quit()
