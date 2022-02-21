@@ -92,7 +92,7 @@ def clock_in(config):
     final_url = handle_clock_in_url + "?" + parse.urlencode(param)
     print("post data: " + final_url)
     response = session.post(final_url, json=make_request(
-        config["vaccine"], config["address"] if "address" in config.keys() or config["address"] == "" else ""
+        config["vaccine"], config["address"] if "address" in config.keys() else ""
     ))
     try:
         re = json.loads(response.text)
