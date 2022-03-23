@@ -122,8 +122,7 @@ def make_request(vaccine, address):
 
     return {'examenSchemeId': examen_schema_id, 'examenTitle': '师生报平安',
             'answer': '{"填报日期(Date)":"' + today + '","自动定位(Automatic location)":"' +
-                      (address if address else '浙江省 杭州市 拱墅区') + '","目前所在地":"' +
-                      (address if address else '校内 校内 校内') +
+                      (address if address else '浙江省 杭州市 拱墅区') +
                       '",'
                       '"近14天是否有与疫情中、高风险地区人员的接触史？(Did you contact any person(s) from medium '
                       'or high risk area of the epidemic in the past 14 days?)":"否(NO)",'
@@ -180,9 +179,13 @@ if __name__ == '__main__':
                     u += "：打卡失败！" + e.msg + "\n"
                 else:
                     log = e.msg
+                    # 发送问卷内容更新消息给打卡人
+                    for u in configs["user"]:
+                        if "email" in config.keys() and config["email"] != "":
+                            sender.send(config["email"], "ZUCC 打卡日志", today + ":\n打卡失败！问卷内容更新，请及时联系管理员！")
                     break
             except BaseException as e:
-                u += ": 打卡失败，未处理的异常！\n"
+                u += ": 打卡失败！未处理的异常！\n"
             # 发送打卡信息给打卡人
             if "email" in config.keys() and config["email"] != "":
                 sender.send(config["email"], "ZUCC 打卡日志", today + ":\n" + u)
