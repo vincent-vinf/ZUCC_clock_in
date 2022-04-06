@@ -166,8 +166,11 @@ if __name__ == '__main__':
         log = ""
         for config in configs["user"]:
             u = config["username"]
+            if len(u) == 0:
+                continue
             if "tag" in config.keys():
                 u += "(" + config["tag"] + ")"
+            print(u)
             try:
                 if clock_in(config):
                     u += ": 打卡成功！\n"
@@ -190,6 +193,8 @@ if __name__ == '__main__':
             if "email" in config.keys() and config["email"] != "":
                 sender.send(config["email"], "ZUCC 打卡日志", today + ":\n" + u)
             log += u
+            sleep_time = random.randint(500, 3000) / 1000
+            time.sleep(sleep_time)
 
         print(log)
         sender.send(email_config["receiver"], "ZUCC 打卡日志（总）", today + ":\n" + log)
