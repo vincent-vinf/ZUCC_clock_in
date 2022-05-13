@@ -33,6 +33,8 @@ today = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 1 打卡模版不一致错误
 2 账号密码不正确错误
 '''
+
+
 class ClockInError(Exception):
     def __init__(self, code):
         self.code = code
@@ -156,12 +158,15 @@ def make_request(vaccine, address):
 if __name__ == '__main__':
     with open("./config.json", 'r', encoding='utf-8') as configs:
         configs = json.load(configs)
-        email_config = configs["email"]
-        try:
-            sender = EmailSender(email_config["host"], email_config["username"], email_config["password"])
-        except BaseException as e:
-            print("获取邮箱发送实例失败，" + e.__str__() + "！\n")
-            exit(0)
+        email_config = None
+        sender = None
+        if "email" in configs.keys():
+            email_config = configs["email"]
+            try:
+                sender = EmailSender(email_config["host"], email_config["username"], email_config["password"])
+            except BaseException as e:
+                print("获取邮箱发送实例失败，" + e.__str__() + "！\n")
+                exit(0)
 
         log = ""
         for config in configs["user"]:
@@ -183,19 +188,21 @@ if __name__ == '__main__':
                 else:
                     log = e.msg
                     # 发送问卷内容更新消息给打卡人
-                    for u in configs["user"]:
-                        if "email" in config.keys() and config["email"] != "":
-                            sender.send(config["email"], "ZUCC 打卡日志", today + ":\n打卡失败！问卷内容更新，请及时联系管理员！")
+                    if sender is not None:
+                        for u in configs["user"]:
+                            if "email" in config.keys() and config["email"] != "":
+                                sender.send(config["email"], "ZUCC 打卡日志", today + ":\n打卡失败！问卷内容更新，请及时联系管理员！")
                     break
             except BaseException as e:
                 u += ": 打卡失败！未处理的异常！\n"
             # 发送打卡信息给打卡人
-            if "email" in config.keys() and config["email"] != "":
+            if sender is not None and "email" in config.keys():
                 sender.send(config["email"], "ZUCC 打卡日志", today + ":\n" + u)
             log += u
             sleep_time = random.randint(500, 3000) / 1000
             time.sleep(sleep_time)
 
         print(log)
-        sender.send(email_config["receiver"], "ZUCC 打卡日志（总）", today + ":\n" + log)
-        sender.quit()
+        if sender is not None:
+            sender.send(email_config["receiver"], "ZUCC 打卡日志（总）", today + ":\n" + log)
+            sender.quit()
