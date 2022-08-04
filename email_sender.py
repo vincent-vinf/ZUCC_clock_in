@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from email.header import Header
 from smtplib import SMTP_SSL
 
+
 class EmailSender:
     def __init__(self, host, username, password):
         self.__username = username
@@ -15,7 +16,9 @@ class EmailSender:
         self.__smtp.login(username, password)
 
     def send(self, receiver, mail_title='', mail_content=''):
-        # construct message
+        if not receiver:
+            return
+            # construct message
         msg = MIMEText(mail_content, "plain", 'utf-8')
         msg["Subject"] = Header(mail_title, 'utf-8')
         msg["From"] = self.__username
