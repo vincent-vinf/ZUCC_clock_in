@@ -94,7 +94,9 @@ def clock_in(config):
     final_url = handle_clock_in_url + "?" + parse.urlencode(param)
     print("post data: " + final_url)
     response = session.post(final_url, json=make_request(
-        config["vaccine"], config["address"] if "address" in config.keys() else ""
+        config["vaccine"],
+        config["address"] if "address" in config.keys() else "",
+        config["inSchool"]
     ))
     try:
         re = json.loads(response.text)
@@ -116,43 +118,38 @@ def save_schema(re):
     f.close()
 
 
-def make_request(vaccine, address):
+def make_request(vaccine, address, in_school):
     # vaccine为编号
-
-    vaccine_list = {"1": "已接种两针剂疫苗（科兴、生物等）第一针", "2": "已接种两针剂疫苗（科兴、生物等）第二针", "3": "已接种两针剂疫苗（科兴、生物等）加强针",
-                    "4": "已接种三针剂疫苗（安徽智飞）第一针", "5": "已接种三针剂疫苗（安徽智飞）第二针", "6": "已接种三针剂疫苗（安徽智飞）第三针", "7": "未接种疫苗"}
+    vaccine_list = {"1": "已接种第一针 (first jab received) ",
+                    "2": "已接种第二针（已满6个月）(second jab received, more than 6 months)",
+                    "3": "已接种第二针（未满6个月）(second jab received, less than 6 months)",
+                    "4": "已接种第三针( booster jab received)",
+                    "5": "未接种(unvaccinated)"}
 
     return {'examenSchemeId': examen_schema_id, 'examenTitle': '师生报平安',
             'answer': '{"填报日期(Date)":"' + today + '","自动定位(Automatic location)":"' +
                       (address if address else '浙江省 杭州市 拱墅区') +
                       '",'
-                      '"近14天是否有与疫情中、高风险地区人员的接触史？(Did you contact any person(s) from medium '
-                      'or high risk area of the epidemic in the past 14 days?)":"否(NO)",'
-                      '"近14天是否有与疑似、确诊人员的接触史?(In the past 14 days, did you contact any '
-                      'COVID-19 suspected or confirmed person(s)?)":"否(NO)",'
-                      '"近21天是否有中高风险地区旅居史，近14天是否有中高风险地区所在区旅居史？( In the past 21 days, '
-                      'have you been to medium or high-risk area? In the past 14 days, '
-                      'have you been to any places close to medium or high risk area?)":"否('
-                      'NO)","现是否处于医学观察状态？(Are you under medical observation currently '
-                      '?)":"否(NO)","若处于医学观察状态，请填写隔离地点和隔离起始时间？(If yes, please indicate the '
-                      'place and the starting date.)":"","现是否处于居家隔离状态？(Are you in home '
-                      'quarantine now?)":"否(NO)","若处于居家隔离状态，请填写隔离地点和隔离起始时间？(If yes, '
-                      'please indicate the place and the starting date.)":"",'
-                      '"现身体状况，是否存在发热体温、寒战、咳嗽、胸闷以及呼吸困难等症状？( Do you have any symptoms such as '
-                      'fever, chills, cough, chest tightness, and difficulty '
-                      'breathing?)":"否(NO)","同住家属近14天是否有与疫情中、高风险地区人员或疑似、确诊人员的接触史？(Did your '
-                      'family member (s) living together contact any person(s) from medium '
-                      'or high risk area in the past 14 days?)":"否(NO)",'
-                      '"同住家属近14天是否到过疫情中、高风险地区？(Have any family members living together been '
-                      'to medium or high risk area in the past 14 days?)":"否(NO)",'
-                      '"同住家属现是否处于医学观察状态?(Are the family members living together under '
-                      'medical observation?)":"否(NO)","疫苗接种情况?(Vaccination '
-                      'status?)":"' + vaccine_list[vaccine] +
-                      '","今日申领学校所在地健康码的颜色? What\'s the color '
-                      'of today\'s health code?":"绿码(Green code)",'
-                      '"本人或家庭成员(包括其他亲密接触人员)是否有近28日入境或未来7日拟入境的情况?Have you or your family '
-                      'members(including other close contact persons) entered China over the '
-                      'past 28 days or plan to enter China in 7 days?":"否 No"}'}
+                      '"今日是否在校？(Are you on campus today?)":"' +
+                      ('是(Yes)' if in_school else '否(NO)') +
+                      '",'
+                      '"近2天内是否曾经离杭？(Did you ever leave Hangzhou in past two days?)":"否(NO)",'
+                      '"近7天是否有国内中高风险地区所在区旅居史?( In the past 7 days, have you been to any places close to medium or '
+                      'high risk area?)":"否(NO)",'
+                      '"近7天是否有（或被告知有）与疑似、确诊人员或密切接触者的接触史? (In the past 7 days，did you contact any COVID-19 suspected '
+                      'or confirmed person(s) or close contacts ?)":"否(NO)",'
+                      '"现是否处于健康管理（管控）期? 如是，请暂缓来校。(Are you under health management period currently ? If yes, '
+                      'please do not come to school for the time being.) ":"否(NO)",'
+                      '"现身体状况，是否存在发热体温、寒战、咳嗽、胸闷以及呼吸困难等症状? (Do you have any symptoms such as fever, chills, cough, '
+                      'chest tightness and dyspnea?)":"否(NO)",'
+                      '"同住家属（人员）是否有上述与疫情相关的情况？(Did your family members(s) living together have any situation '
+                      'mentioned above ?)":"否(NO)",'
+                      '"当前疫苗接种情况? (Vaccination status?)":"' +
+                      vaccine_list[vaccine] +
+                      '",'
+                      '"本人或家庭成员(包括其他亲密接触人员)是否有近10日入境或未来7天内拟入境的情况? (Have you or your family members(including other '
+                      'close contact persons) entered China over the past 10 days or plan to enter China in 7 '
+                      'days?)":"否(NO)"}'}
 
 
 if __name__ == '__main__':
@@ -194,6 +191,7 @@ if __name__ == '__main__':
                                 sender.send(config["email"], "ZUCC 打卡日志", today + ":\n打卡失败！问卷内容更新，请及时联系管理员！")
                     break
             except BaseException as e:
+                print(e)
                 u += ": 打卡失败！未处理的异常！\n"
             # 发送打卡信息给打卡人
             if sender is not None and "email" in config.keys():

@@ -4,6 +4,7 @@
       "username": "xxxxxxxx",
       "password": "xxxxxx",
       "vaccine": "1",
+      "inSchool": true,
       "address": "浙江省 杭州市 西湖区",
       "tag": "张三",
       "email": "xxxx@qq.com"
@@ -12,6 +13,7 @@
       "username": "xxxxxxxx",
       "password": "xxxxxx",
       "vaccine": "2",
+      "inSchool": false,
       "address": "",
       "tag": "李四",
       "email": ""

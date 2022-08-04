@@ -4,7 +4,6 @@ from email.mime.text import MIMEText
 from email.header import Header
 from smtplib import SMTP_SSL
 
-
 class EmailSender:
     def __init__(self, host, username, password):
         self.__username = username

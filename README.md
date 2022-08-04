@@ -9,6 +9,7 @@ Zucc自动打卡
          "username": "xxxxxxxx",
          "password": "xxxxxx",
          "vaccine": "1",
+         "inSchool": true,
          "address": "浙江省 杭州市 西湖区",
          "tag": "张三",
          "email": "xxxx@qq.com"
@@ -17,6 +18,7 @@ Zucc自动打卡
          "username": "xxxxxxxx",
          "password": "xxxxxx",
          "vaccine": "2",
+         "inSchool": false,
          "address": "",
          "tag": "李四",
          "email": ""
@@ -31,15 +33,15 @@ Zucc自动打卡
    }
    ```
 
-   （必填）**`vaccine`（疫苗）选项**(2021-12-31)更新
+   （*必填*）**`vaccine`（疫苗）选项**(2022-08-04)更新
 
-   > (1) 已接种两针剂疫苗（科兴、生物等）第一针  
-   > (2) 已接种两针剂疫苗（科兴、生物等）第二针  
-   > (3) 已接种两针剂疫苗（科兴、生物等）加强针  
-   > (4) 已接种三针剂疫苗（安徽智飞）第一针  
-   > (5) 已接种三针剂疫苗（安徽智飞）第二针  
-   > (6) 已接种三针剂疫苗（安徽智飞）第三针  
-   > (7) 未接种疫苗
+   > (1) 已接种第一针 (first jab received)   
+   > (2) 已接种第二针（已满6个月）(second jab received, more than 6 months)  
+   > (3) 已接种第二针（未满6个月）(second jab received, less than 6 months)  
+   > (4) 已接种第三针( booster jab received)  
+   > (5) 未接种(unvaccinated)
+
+   （*必填*）**`inSchool` 选项**填写今日是否在校，true 为是，false 为否
 
    （选填）**`address` 选项**填写假期时所在地，具体格式遵循 `省 市 区`（建议先手动打卡再准确填入，注意空格！），默认空字符串为学校地址
 
