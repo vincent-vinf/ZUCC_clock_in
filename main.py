@@ -134,8 +134,8 @@ def make_request(vaccine, address, in_school):
                       ('是(Yes)' if in_school else '否(NO)') +
                       '",'
                       '"近2天内是否曾经离杭？(Did you ever leave Hangzhou in past two days?)":"否(NO)",'
-                      '"近7天是否有国内中高风险地区所在区旅居史?( In the past 7 days, have you been to any places close to medium or '
-                      'high risk area?)":"否(NO)",'
+                      '"近7天是否有国内高中低风险地区旅居史?( In the past 7 days, have you ever been to any low, medium or high risk '
+                      'areas?)":"否(NO)",'
                       '"近7天是否有（或被告知有）与疑似、确诊人员或密切接触者的接触史? (In the past 7 days，did you contact any COVID-19 suspected '
                       'or confirmed person(s) or close contacts ?)":"否(NO)",'
                       '"现是否处于健康管理（管控）期? 如是，请暂缓来校。(Are you under health management period currently ? If yes, '

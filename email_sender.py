@@ -16,9 +16,9 @@ class EmailSender:
         self.__smtp.login(username, password)
 
     def send(self, receiver, mail_title='', mail_content=''):
-        if not receiver:
+        if len(receiver) == 0:
             return
-            # construct message
+        # construct message
         msg = MIMEText(mail_content, "plain", 'utf-8')
         msg["Subject"] = Header(mail_title, 'utf-8')
         msg["From"] = self.__username
