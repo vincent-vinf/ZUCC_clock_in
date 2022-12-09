@@ -59,4 +59,12 @@ Zucc自动打卡
    # 注意目录和文件的权限足够
    ```
 
+另外也可以在docker中运行打卡脚本，这样本地就不需要配置python环境
+
+```sh
+docker run -it --rm -v <path/to>/config.json:/app/config.json registry.cn-shanghai.aliyuncs.com/codev/js-executor:latest
+```
+
+
+
 **打卡的具体信息可能更新，代码也需要更新**
